@@ -1,18 +1,18 @@
 Allow backports to be integrated into vmlinux.
 
 diff --git a/Makefile b/Makefile
-index 6d1e304..de26b18 100644
+index 5a27339..9b1e641 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -542,6 +542,7 @@ scripts: scripts_basic include/config/auto.conf include/config/tristate.conf \
+@@ -510,6 +510,7 @@ scripts: scripts_basic include/config/auto.conf include/config/tristate.conf
  	$(Q)$(MAKE) $(build)=$(@)
  
  # Objects we will link into vmlinux / subdirs we need to visit
 +backports-y 	:= backports/
  init-y		:= init/
- drivers-y	:= drivers/ sound/ firmware/
+ drivers-y	:= drivers/ sound/ firmware/ ubuntu/
  net-y		:= net/
-@@ -820,13 +821,16 @@ core-y		+= kernel/ mm/ fs/ ipc/ security/ crypto/ block/
+@@ -716,13 +717,16 @@ core-y		+= kernel/ mm/ fs/ ipc/ security/ crypto/ block/
  
  vmlinux-dirs	:= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
  		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \
@@ -29,12 +29,12 @@ index 6d1e304..de26b18 100644
  init-y		:= $(patsubst %/, %/built-in.o, $(init-y))
  core-y		:= $(patsubst %/, %/built-in.o, $(core-y))
  drivers-y	:= $(patsubst %/, %/built-in.o, $(drivers-y))
-@@ -837,7 +841,7 @@ libs-y		:= $(libs-y1) $(libs-y2)
+@@ -759,7 +763,7 @@ libs-y		:= $(libs-y1) $(libs-y2)
+ # System.map is generated to document addresses of all kernel symbols
  
- # Externally visible symbols (used by link-vmlinux.sh)
- export KBUILD_VMLINUX_INIT := $(head-y) $(init-y)
--export KBUILD_VMLINUX_MAIN := $(core-y) $(libs-y) $(drivers-y) $(net-y)
-+export KBUILD_VMLINUX_MAIN := $(core-y) $(libs-y) $(drivers-y) $(net-y) $(backports-y)
- export KBUILD_LDS          := arch/$(SRCARCH)/kernel/vmlinux.lds
- export LDFLAGS_vmlinux
- # used by scripts/pacmage/Makefile
+ vmlinux-init := $(head-y) $(init-y)
+-vmlinux-main := $(core-y) $(libs-y) $(drivers-y) $(net-y)
++vmlinux-main := $(core-y) $(libs-y) $(drivers-y) $(net-y) $(backports-y)
+ vmlinux-all  := $(vmlinux-init) $(vmlinux-main)
+ vmlinux-lds  := arch/$(SRCARCH)/kernel/vmlinux.lds
+ export KBUILD_VMLINUX_OBJS := $(vmlinux-all)
