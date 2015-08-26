@@ -61,6 +61,10 @@ include/net/ieee802154_netdev.h
 include/linux/spi/at86rf230.h
 include/linux/spi/cc2520.h
 
+net/6lowpan/
+net/ieee802154/
+net/mac802154/
+
 # MPLS labels, checked on skb->protocol on the
 # respective 802 family, only ethernet seems to use
 # this right now, see 960d97f95

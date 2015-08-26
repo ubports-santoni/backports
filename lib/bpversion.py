@@ -41,8 +41,14 @@ def kernelversion(tree):
     return stdout.strip()
 
 def genkconfig_versions(rel_specs):
+    def gen_versions(version, patchlevel, max_patchlevel=20):
+        versions = ''
+        for i in range(patchlevel, max_patchlevel):
+            versions += "config BACKPORT_KERNEL_%s_%s\n" % (version, i)
+            versions += "    def_bool y\n"
+        return versions
+
     data = ''
-    for i in range(int(rel_specs['PATCHLEVEL']) + 1, 99):
-        data += "config BACKPORT_KERNEL_%s_%s\n" % (rel_specs['VERSION'], i)
-        data += "    def_bool y\n"
+    data += gen_versions(int(rel_specs['VERSION']), int(rel_specs['PATCHLEVEL']) + 1)
+    data += gen_versions(4, 0, 3)
     return data

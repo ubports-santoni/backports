@@ -827,7 +827,6 @@ def process(kerneldir, copy_list_file, git_revision=None,
             ('Kconfig.package', 'Kconfig'),
             ]
     backport_files = [(x, x) for x in [
-        'Kconfig.sources',
         'compat/',
         'backport-include/',
     ]]
@@ -915,9 +914,17 @@ def process(kerneldir, copy_list_file, git_revision=None,
             logwrite('Cannot parse source kernel version, update parser')
             sys.exit(1)
         data = gen_version.genkconfig_versions(rel_specs)
-        fo = open(os.path.join(bpid.target_dir, 'Kconfig.versions'), 'w')
-        fo.write(data)
-        fo.close()
+
+        out = ''
+        for l in open(os.path.join(bpid.target_dir, 'Kconfig'), 'r'):
+            if l.startswith('%%KCONFIG_VERSIONS%%'):
+                out += data
+            else:
+                out += l
+
+        outf = open(os.path.join(bpid.target_dir, 'Kconfig'), 'w')
+        outf.write(out)
+        outf.close()
         git_debug_snapshot(args, "generate kernel version requirement Kconfig file")
 
     # some post-processing is required
@@ -1005,6 +1012,7 @@ def process(kerneldir, copy_list_file, git_revision=None,
             for r in regexes:
                 data = r.sub(r'' + bpid.full_prefix + '\\1', data)
             data = re.sub(r'\$\(srctree\)', '$(backport_srctree)', data)
+            data = re.sub(r'\$\(srctree_real\)', '$(srctree)', data)
             data = re.sub(r'-Idrivers', '-I$(backport_srctree)/drivers', data)
             if bpid.integrate:
                 data = re.sub(r'CPTCFG_', bpid.full_prefix, data)

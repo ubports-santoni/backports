@@ -30,7 +30,16 @@ menuconfig BACKPORT_LINUX
 
 if BACKPORT_LINUX
 
-source "$BACKPORT_DIR/Kconfig.versions"
-source "$BACKPORT_DIR/Kconfig.sources"
+%%KCONFIG_VERSIONS%%
+
+# this has the configuration for the backport code
+source "$BACKPORT_DIR/compat/Kconfig"
+
+# these are copied from the kernel
+source "$BACKPORT_DIR/net/bluetooth/Kconfig"
+
+source "$BACKPORT_DIR/net/6lowpan/Kconfig"
+source "$BACKPORT_DIR/net/ieee802154/Kconfig"
+source "$BACKPORT_DIR/net/mac802154/Kconfig"
 
 endif # BACKPORT_LINUX
